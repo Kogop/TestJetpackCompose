@@ -19,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.test.TempConverter.CalcScreen
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -98,7 +100,7 @@ fun rememberConnectivityState(): State<NetworkInterface> {
 }
 
 @Composable
-fun NetworkScreen(){
+fun NetworkScreen() : Boolean{
     val connectionState by rememberConnectivityState()
 
     val isConnected by remember(connectionState) {
@@ -107,12 +109,14 @@ fun NetworkScreen(){
         }
     }
 
-    Column {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-            Text(text = if(isConnected) "Connected" else "Unavailable")
-        }
-    }
-
+//    val navController = rememberNavController()
+//    Column {
+//        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
+////            if (isConnected) navController.navigate(CalcScreen)
+////            Text(text = if(isConnected) "Connected" else "Unavailable")
+//        }
+//    }
+    return isConnected
 }
 
 
