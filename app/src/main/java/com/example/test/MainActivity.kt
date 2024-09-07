@@ -3,6 +3,7 @@ package com.example.test
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,8 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.test.TempConverter.ViewModelForTempConverter
 import com.example.test.ui.theme.TestTheme
+import kotlinx.serialization.Serializable
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,9 +40,38 @@ class MainActivity : ComponentActivity() {
 //        enableEdgeToEdge() // плохая ломающая хуита, все улетает за экран
         setContent {
             TestTheme {
-                Surface(modifier = Modifier.fillMaxSize()) {
-                    Calc()
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = CalcScreen
+                ) {
+                    composable<CalcScreen>{
+                        Surface(modifier = Modifier.fillMaxSize()) {
+                            Column {
+                                Calc()
+                                Button(onClick = { navController.navigate(OtherScreen(2))}) {
+                                    Text(text = "Go somewhere else")
+                                }
+                            }
+                        }
+                    }
+                    composable<OtherScreen> {
+                        val args = it.toRoute<OtherScreen>()
+                        Surface(modifier = Modifier.fillMaxSize()) {
+                            Column {
+                                Box(modifier = Modifier){
+                                    if(args.id == 2) {
+                                        Text(text = "id = ${args.id}")
+                                    }
+                                }
+                                Button(onClick = { }) {
+                                    Text(text = "Go somewhere else")
+                                }
+                            }
+                        }
+                    }
                 }
+
             }
         }
     }
@@ -106,4 +141,10 @@ fun MainScreen(isFahrenheit: Boolean, result: String, convertTemp: (String) -> U
     }
 }
 
+@Serializable
+object CalcScreen
 
+@Serializable
+data class OtherScreen(
+    val id : Int
+)
